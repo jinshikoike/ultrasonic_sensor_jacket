@@ -17,10 +17,6 @@ enum sensorIndex{
   cRT = 3
 };
 
-Sd2Card card;
-SdVolume volume;
-SdFile root;
-
 MyUltrasonic LB(5);
 MyUltrasonic RB(6);
 MyUltrasonic LT(7);
@@ -100,7 +96,6 @@ void printData(long miniDistance){
 void printDistance(MyUltrasonic ultrasonic, char* sensorname){
   long centi = ultrasonic.MeasureInCentimeters();
   int led_value = 10 - centi/40;
-  setBits(led_value);
   Serial.print(sensorname);
   Serial.print("  :  ");
   Serial.print(centi);//0~400cm
