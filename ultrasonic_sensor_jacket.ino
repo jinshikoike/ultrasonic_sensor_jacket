@@ -17,17 +17,10 @@ enum sensorIndex{
   cRT = 3
 };
 
-MyUltrasonic LB(5);
-MyUltrasonic RB(6);
-MyUltrasonic LT(7);
-MyUltrasonic RT(8);
-Grove_LED_Bar bar(3, 2, 0);  // Clock pin, Data pin, Orientation
+MyUltrasonic LB(5);MyUltrasonic RB(6);MyUltrasonic LT(7);MyUltrasonic RT(8);
 
 long datas[4] = {400,400,400,400};
-long lbRange=0;
-long rbRange=0;
-long ltRange=0;
-long rtRagne=0;
+long lbRange=0;long rbRange=0;long ltRange=0;long rtRagne=0;
 
 int currentNumber = 0;
 int minSensor = cLB;
@@ -93,16 +86,6 @@ void printData(long miniDistance){
   Serial.println("");
 }
 
-void printDistance(MyUltrasonic ultrasonic, char* sensorname){
-  long centi = ultrasonic.MeasureInCentimeters();
-  int led_value = 10 - centi/40;
-  Serial.print(sensorname);
-  Serial.print("  :  ");
-  Serial.print(centi);//0~400cm
-  Serial.print(" cm : ");
-  Serial.print(led_value);
-  Serial.println(" ");
-}
 
 long getMinDistance(){
    return fmin( fmin(datas[cLB],datas[cRB]), fmin(datas[cLT],datas[cRT]));
