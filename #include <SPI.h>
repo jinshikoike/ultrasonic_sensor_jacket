@@ -1,0 +1,53 @@
+#include <SPI.h>
+#include <SD.h>
+const int chipSelect = 4;
+ 
+void setup()
+{
+	Serial.begin(9600);
+	while (!Serial) {
+		; // wait for serial port to connect. Needed for Leonardo only
+	}
+	 
+	Serial.print("Initializing SD card...");
+	pinMode(4, OUTPUT);
+	 
+	if (!SD.begin(chipSelect)) {
+		Serial.println("Card failed, or not present");
+		return;
+	}
+	Serial.println("card initialized.");
+}
+ 
+void loop()
+{
+	String dataString = "";
+	 
+	for (int analogPin = 0; analogPin &lt; 2; analogPin++) {
+		int sensor = analogRead(analogPin);
+		if (analogPin == 0) {
+			dataString += String(sensor); 
+			dataString += ",";
+		}
+		else if(analogPin == 1){
+			dataString += String(modTemp(sensor)); 
+		}
+	}
+	 
+	File dataFile = SD.open("DATALOG.TXT", FILE_WRITE); //ファイル名 
+	 
+	if (dataFile) { //SDカードのファイルが無事開けたら(ない場合は新規作成)
+		dataFile.println(dataString); //dataStringに入っている内容を書き込み
+		dataFile.close(); //書き込み後ファイルを閉じる
+		Serial.println(dataString);
+	}else {
+		Serial.println("error opening datalog.txt");
+	}
+}
+ 
+//温度センサーの値を摂氏度℃に変換
+float modTemp(int analog_val){
+	float tv = map(analog_val,0,1023,0,5000); // センサー値を電圧に変換する
+	float temp = map(tv,300,1600,-30,100) ;
+	return temp;
+}
