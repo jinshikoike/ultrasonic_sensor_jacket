@@ -3,6 +3,8 @@
 #include <Grove_LED_Bar.h>
 #include <SPI.h>
 #include <SD.h>
+#include <Wire.h>
+#include "rgb_lcd.h"
 //   背中
 //--------------
 // LT    RT
@@ -25,13 +27,27 @@ long lbRange=0;long rbRange=0;long ltRange=0;long rtRagne=0;
 int currentNumber = 0;
 int minSensor = cLB;
 
+int checkRange = 200;
+
+//led 液晶
+rgb_lcd lcd;
+
 bool first = true;
 
 void setup()
 {
 	Serial.begin(9600);
         pinMode(4, OUTPUT);
-        delay(500);
+        
+        // set up the LCD's number of columns and rows:
+        lcd.begin(16, 2);
+        
+        lcd.setRGB(0, 0, 0);
+        
+        // Print a message to the LCD.
+        lcd.print("launched");
+    
+        delay(1000);
 }
 
 void loop()
@@ -57,19 +73,22 @@ void loop()
         //Serial.println(datas[0]);
         
         long minDistance = getMinDistance();
-        filterDistance();
+        //filterDistance();
         
-        printData(minDistance);   
+        //printData(minDistance);
+        lcd.clear();
+        lcd.print(minDistance);
+        
         boolean checkObject = detectObject(minDistance);
 	
         if(checkObject){
-            //Serial.println("cehck object");
-            digitalWrite(4, HIGH);  
+            digitalWrite(4, HIGH);
+            lcd.setRGB(255, 0, 0);
         }else{
             digitalWrite(4, LOW); 
+            lcd.setRGB(0, 0, 0);
         }
-        //
-        //analogWrite(4, 255);
+        Serial.println("LOW");
         delay(10);
 }
 
@@ -93,13 +112,7 @@ long getMinDistance(){
 
 boolean detectObject(long distance){
    boolean detect = true;
-   if(distance < 40){
-    
-   }else if (distance < 80){
-     
-   }else if(distance < 120){
-       
-   }else if(distance < 200){
+   if(distance < checkRange){
      
    }else{
      detect = false;
